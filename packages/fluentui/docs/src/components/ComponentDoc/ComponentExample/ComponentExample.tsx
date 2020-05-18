@@ -38,10 +38,10 @@ export interface ComponentExampleProps
     ExampleContextValue {
   error: Error | null;
   onError: (error: Error | null) => void;
-  title: React.ReactNode;
+  title: string;
+  titleForAriaLabel?: string;
   description?: React.ReactNode;
   examplePath: string;
-  toolbarAriaLabel?: string;
   resetTheme?: boolean;
 }
 
@@ -224,6 +224,10 @@ class ComponentExample extends React.Component<ComponentExampleProps, ComponentE
     return this.kebabExamplePath;
   };
 
+  getSourceFileNameHint = () => {
+    return `Source code: ${this.props.examplePath.split('/').pop()}`;
+  };
+
   handleCodeApiChange = apiType => () => {
     this.props.handleCodeAPIChange(apiType);
   };
@@ -337,7 +341,7 @@ class ComponentExample extends React.Component<ComponentExampleProps, ComponentE
         children: (Component, props) => (
           <CopyToClipboard key="copy" value={currentCode}>
             {(active, onClick) => (
-              <Component {...props} active={active} icon={active ? 'check' : 'copy'} onClick={onClick} />
+              <Component {...props} active={active} icon={active && <AcceptIcon />} onClick={onClick} />
             )}
           </CopyToClipboard>
         ),
@@ -423,8 +427,8 @@ class ComponentExample extends React.Component<ComponentExampleProps, ComponentE
       defaultExport,
       onError,
       title,
+      titleForAriaLabel,
       wasCodeChanged,
-      toolbarAriaLabel,
       resetTheme,
     } = this.props;
     const {
@@ -461,10 +465,14 @@ class ComponentExample extends React.Component<ComponentExampleProps, ComponentE
 
             <Segment styles={{ padding: 0, borderBottom: '1px solid #ddd' }}>
               <Flex space="between" style={{ padding: '10px 20px' }}>
-                <ComponentExampleTitle description={description} title={title} />
+                <ComponentExampleTitle
+                  description={description}
+                  title={title}
+                  sourceHint={this.getSourceFileNameHint()}
+                />
 
                 <ComponentControls
-                  toolbarAriaLabel={toolbarAriaLabel}
+                  titleForAriaLabel={title || titleForAriaLabel}
                   anchorName={anchorName}
                   exampleCode={currentCode}
                   exampleLanguage={currentCodeLanguage}

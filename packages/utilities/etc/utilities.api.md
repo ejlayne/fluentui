@@ -301,7 +301,7 @@ export const formProperties: string[];
 export function getChildren(parent: HTMLElement, allowVirtualChildren?: boolean): HTMLElement[];
 
 // @public
-export function getDistanceBetweenPoints(point1: IPoint, point2: IPoint): number;
+export function getDistanceBetweenPoints(point1: Point, point2: Point): number;
 
 // @public
 export function getDocument(rootElement?: HTMLElement | null): Document | undefined;
@@ -344,6 +344,9 @@ export function getParent(child: HTMLElement, allowVirtualParents?: boolean): HT
 
 // @public
 export function getPreviousElement(rootElement: HTMLElement, currentElement: HTMLElement | null, checkNode?: boolean, suppressParentTraversal?: boolean, traverseChildren?: boolean, includeElementsInFocusZones?: boolean, allowFocusRoot?: boolean, tabbable?: boolean): HTMLElement | null;
+
+// @public
+export function getPropsWithDefaults<TProps extends {}>(defaultProps: Partial<TProps>, propsWithoutDefaults: TProps): TProps;
 
 // @public
 export function getRect(element: HTMLElement | Window | null): IRectangle | undefined;
@@ -447,6 +450,7 @@ export type IClassNames<T> = {
 export interface IClassNamesFunctionOptions {
     cacheSize?: number;
     disableCaching?: boolean;
+    useStaticStyles?: boolean;
 }
 
 // @public
@@ -628,12 +632,8 @@ export interface IPerfSummary {
     [key: string]: IPerfMeasurement;
 }
 
-// @public
-export interface IPoint {
-    // (undocumented)
-    x: number;
-    // (undocumented)
-    y: number;
+// @public @deprecated
+export interface IPoint extends Point {
 }
 
 // @public (undocumented)
@@ -735,6 +735,8 @@ export interface ISelectionOptions<TItem = IObjectWithKey> {
     // (undocumented)
     canSelectItem?: (item: TItem, index?: number) => boolean;
     getKey?: (item: TItem, index?: number) => string | number;
+    // (undocumented)
+    items?: TItem[];
     // (undocumented)
     onSelectionChanged?: () => void;
     // (undocumented)
@@ -979,6 +981,18 @@ export function on(element: Element | Window, eventName: string, callback: (ev: 
 export const optionProperties: string[];
 
 // @public
+export interface Point {
+    // (undocumented)
+    left?: number;
+    // (undocumented)
+    top?: number;
+    // @deprecated (undocumented)
+    x?: number;
+    // @deprecated (undocumented)
+    y?: number;
+}
+
+// @public
 export function portalContainsElement(target: HTMLElement, parent?: HTMLElement): boolean;
 
 // @public
@@ -1150,6 +1164,12 @@ export function shouldWrapFocus(element: HTMLElement, noWrapDataAttribute: 'data
 
 // @public
 export function styled<TComponentProps extends IPropsWithStyles<TStyleProps, TStyleSet>, TStyleProps, TStyleSet extends IStyleSet<TStyleSet>>(Component: React.ComponentClass<TComponentProps> | React.FunctionComponent<TComponentProps>, baseStyles: IStyleFunctionOrObject<TStyleProps, TStyleSet>, getProps?: (props: TComponentProps) => Partial<TComponentProps>, customizable?: ICustomizableProps, pure?: boolean): React.FunctionComponent<TComponentProps>;
+
+// @public (undocumented)
+export type StyleFunction<TStyleProps, TStyleSet> = IStyleFunctionOrObject<TStyleProps, TStyleSet> & {
+    __cachedInputs__: (IStyleFunctionOrObject<TStyleProps, TStyleSet> | undefined)[];
+    __noStyleOverride__: boolean;
+};
 
 // @public
 export const tableProperties: string[];
